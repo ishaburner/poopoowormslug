@@ -116,7 +116,7 @@ Access granted. You have unlocked: caffeine.\nStarbucks card number: ####\nSecur
     function showLoadingSequence() {
       typeLine("YOU HAVE BEEN HACKED.\n", () => {
         typeLine("Decrypting files...\n", () => {
-          typeLine("Unauthorized access detected. Answer the security questions to proceed.\n", () => {
+          typeLine("Your phone will self destruct unless you answer the following security questions.\n", () => {
             setTimeout(askPrompt, 500);
           });
         });
