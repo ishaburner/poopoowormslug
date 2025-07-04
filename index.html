@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>terminal.sh</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: monospace;
+      padding: 10px;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #terminal {
+      white-space: pre-wrap;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .line::before {
+      content: ">";
+      color: #00ff00;
+    }
+
+    input {
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal"></div>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+
+    const prompts = [
+      { question: "What did we eat on our first date?", answer: ["in and out", "in n out", "in-n-out"] },
+      { question: "Who's the bigger diva?", answer: ["trevor", "Trevor"] },
+      { question: "I farted. What animal did I just see?", answer: ["Llama", "a llama"] },
+      { question: "Who's the best girlfriend ever?", answer: ["Isha", "isha"] },
+    ];
+
+    const romanticReveal = `
+  .:::.   .:::.
+ :::::::.:::::::
+ :::::::::::::::
+ ':::::::::::::'
+   ':::::::::'
+     ':::::'
+       ':'
+
+Access granted. Here's a picture of my butt: link"
+`;
+
+    let i = 0;
+    let tries = 0;
+
+    function typeLine(text, callback, delay = 30) {
+      let index = 0;
+      const line = document.createElement("div");
+      terminal.appendChild(line);
+
+      function type() {
+        if (index < text.length) {
+          line.textContent += text[index++];
+          terminal.scrollTop = terminal.scrollHeight;
+          setTimeout(type, delay);
+        } else {
+          if (callback) callback();
+        }
+      }
+
+      type();
+    }
+
+    function showLoadingSequence() {
+      typeLine("YOU HAVE BEEN HACKED.\n", () => {
+        typeLine("Decrypting files...\n", () => {
+          typeLine("Unauthorized access detected. Answer the security questions to proceed.\n", () => {
+            setTimeout(askPrompt, 500);
+          });
+        });
+      });
+    }
+
+    function askPrompt() {
+      if (i >= prompts.length) {
+        appendLine(romanticReveal, false);
+        return;
+      }
+
+      const p = prompts[i];
+      tries = 0;
+
+      const lineDiv = document.createElement("div");
+      lineDiv.className = "line";
+      lineDiv.textContent = p.question;
+      terminal.appendChild(lineDiv);
+
+      createInput();
+    }
+
+    function createInput() {
+      const input = document.createElement("input");
+      terminal.appendChild(input);
+      input.focus();
+
+      function onKeyDown(e) {
+        if (e.key === "Enter") {
+          const userInput = input.value.trim().toLowerCase();
+          const p = prompts[i];
+
+          // ✅ Fixed: check if any answer matches (case-insensitive)
+          const confirmed = Array.isArray(p.answer)
+            ? p.answer.some(a => a.toLowerCase() === userInput)
+            : userInput === p.answer.toLowerCase();
+
+          const responseLine = document.createElement("div");
+          responseLine.textContent = `poopoowormslug$ ${input.value}`;
+          terminal.insertBefore(responseLine, input);
+          terminal.removeChild(input);
+          input.removeEventListener("keydown", onKeyDown);
+
+          if (!confirmed) {
+            tries++;
+            if (tries < 3) {
+              appendLine("*LOUD INCORRECT BUZZER* try again.", false);
+              createInput();
+            } else {
+              appendLine("Oh so you hate me. Try again later chungus.", false);
+            }
+          } else {
+            i++;
+            setTimeout(askPrompt, 500);
+          }
+
+          terminal.scrollTop = terminal.scrollHeight;
+        }
+      }
+
+      input.addEventListener("keydown", onKeyDown);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function appendLine(text, isCommand = true) {
+      const line = document.createElement("div");
+      line.className = isCommand ? "line" : "";
+      line.textContent = text;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    showLoadingSequence();
+  </script>
+</body>
+</html>
