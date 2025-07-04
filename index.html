@@ -124,7 +124,7 @@ Access granted. Here's a picture of my butt: link"
             : userInput === p.answer.toLowerCase();
 
           const responseLine = document.createElement("div");
-          responseLine.textContent = `poopoowormslug$ ${input.value}`;
+          responseLine.textContent = `> ${input.value}`;
           terminal.insertBefore(responseLine, input);
           terminal.removeChild(input);
           input.removeEventListener("keydown", onKeyDown);
